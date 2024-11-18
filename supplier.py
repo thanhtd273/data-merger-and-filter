@@ -1,5 +1,6 @@
 import requests
 from base import Hotel, Images, Amenities, Link, Location
+from utils import Util
 
 class BaseSupplier:
     
@@ -27,13 +28,16 @@ class Acme(BaseSupplier):
                             city=dto["City"],
                             country=dto["Country"]
                             )
-        amenities = Amenities(general=dto["Facilities"])
+        general = dto["Facilities"]
+        if (general != None):
+            general = list(map(lambda item: Util.format_str(item), general))
+
         return Hotel(id=dto["Id"], 
                      destination_id=dto["DestinationId"],
                      name=dto["Name"],
                      location=location,
                      description=dto["Description"],
-                     amenities=amenities,
+                     amenities=Amenities(general=general),
                      images=None,
                      booking_conditions=[]
                      )
@@ -46,7 +50,10 @@ class Patagonia(BaseSupplier):
     @staticmethod
     def parse(dto: dict) -> Hotel:
         location = Location(lat=dto["lat"], lng=dto["lng"], address=dto["address"])
-        amenities = Amenities(room=dto["amenities"])
+        room = dto["amenities"]
+        if (room != None):
+            room = list(map(lambda item: Util.format_str(item), room))
+
         images = Images()
         image_data = dto["images"]
         room_images = image_data["rooms"]
@@ -66,7 +73,7 @@ class Patagonia(BaseSupplier):
                     name=dto["name"],
                     location=location,
                     description=dto["info"],
-                    amenities=amenities,
+                    amenities=Amenities(room=room),
                     images=images
                     )
 
@@ -78,28 +85,41 @@ class Paperflies(BaseSupplier):
     @staticmethod
     def parse(dto: dict) -> Hotel:
         location = Location(address=dto["location"]["address"], country=dto["location"]["country"])
-        # location = Location
-        # amenities = Amenities(room=dto["amenities"])
+
+        origin_amenities = dto["amenities"]
+        if origin_amenities != None:
+            amenities = Amenities()
+
+            room = origin_amenities["room"]
+            if room != None:
+                room = list(map(lambda item: Util.format_str(item), room))
+                amenities.room = room
+            
+            general = origin_amenities["general"]
+            if general != None:
+                general = list(map(lambda item: Util.format_str(item), general))
+                amenities.general = general
+
         images = Images()
         image_data = dto["images"]
         room_images = image_data["rooms"]
         if room_images != None and isinstance(room_images, list) :
-            for room in room_images:
-                link = Link(link=room["link"], description=room["caption"])
+            for room_image in room_images:
+                link = Link(link=room_image["link"], description=room_image["caption"])
                 images.rooms.append(link)
 
         site_images = image_data["site"]
         if site_images != None and isinstance(site_images, list):
             for site_image in site_images:
                 link = Link(link=site_image["link"], description=site_image["caption"])
-                images.amenities.append(link)
-                
+                images.site.append(link)
+        
         return Hotel(id = dto["hotel_id"],
                     destination_id=dto["destination_id"],
                     name=dto["hotel_name"],
                     location=location,
                     description=dto["details"],
-                    amenities=None,
+                    amenities=amenities,
                     images=images,
                     booking_conditions=dto["booking_conditions"]
                     )

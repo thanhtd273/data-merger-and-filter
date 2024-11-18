@@ -1,3 +1,4 @@
+import re
 from base import Hotel
 
 class Util:
@@ -17,6 +18,10 @@ class Util:
         return -1
     
     @staticmethod
-    def extend_and_remove_duplicate(origin: list, data: list):
+    def merge_list(origin: list, data: list):
         origin.extend(data)
         return list(set(origin))
+    
+    @staticmethod
+    def format_str(s: str) -> str:
+        return re.sub(r'(?<!^)(?=[A-Z])', ' ', s).lower().strip()

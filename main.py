@@ -5,7 +5,6 @@ from base import Hotel
 from utils import Util
 from supplier import BaseSupplier, Acme, Patagonia, Paperflies
 
-
 class HotelService:
     @staticmethod
     def get_data(suppliers: list[BaseSupplier]):
@@ -26,52 +25,51 @@ class HotelService:
                 result.append(data[i])
                 continue
 
-            existed_item = result[index]
-            if existed_item.name == None:
-                existed_item.name = data[i].name
+            existed = result[index]
+            if data[i].name != None:
+                existed.name = data[i].name
 
-            if existed_item.description == None:
-                existed_item.description = data[i].description
+            if data[i].description != None:
+                existed.description = data[i].description
 
-            if existed_item.location == None:
-                existed_item.location = data[i].location
+            if existed.location == None:
+                existed.location = data[i].location
             else:
                 location = data[i].location
-                if existed_item.location.address == None:
-                    existed_item.location.address = location.address
-                elif existed_item.location.city == None:
-                    existed_item.location.city = location.city
-                elif existed_item.location.country == None:
-                    existed_item.location.country = location.country
-                elif existed_item.location.lat == None:
-                    existed_item.location.lat = location.lat
-                elif existed_item.location.lng == None:
-                    existed_item.location.lng = location.lng
+                if location.address != None:
+                    existed.location.address = location.address
+                if location.city != None:
+                    existed.location.city = location.city
+                if location.country != None:
+                    existed.location.country = location.country
+                if location.lat != None:
+                    existed.location.lat = location.lat
+                if location.lng != None:
+                    existed.location.lng = location.lng
             
-            if existed_item.amenities == None:
-                existed_item.amenities = data[i].amenities
+            if existed.amenities == None:
+                existed.amenities = data[i].amenities
             elif data[i].amenities != None:
                 general = data[i].amenities.general
                 if general != None:
-                    existed_item.amenities.general.extend(general)
-                    existed_item.amenities.general = list(set(existed_item.amenities.general))
+                    existed.amenities.general = Util.merge_list(existed.amenities.general, general)
+
                 room = data[i].amenities.room
                 if room != None:
-                    existed_item.amenities.room.extend(room)
-                    existed_item.amenities.room = list(set(existed_item.amenities.room))
+                    existed.amenities.room = Util.merge_list(existed.amenities.room, room)
             
-            if existed_item.images == None:
-                existed_item.images = data[i].images
+            if existed.images == None:
+                existed.images = data[i].images
             elif data[i].images != None:
-                existed_item.images.rooms = Util.extend_and_remove_duplicate(existed_item.images.rooms, data[i].images.rooms)
-                existed_item.images.site = Util.extend_and_remove_duplicate(existed_item.images.site, data[i].images.site)
-                existed_item.images.amenities = Util.extend_and_remove_duplicate(existed_item.images.amenities, data[i].images.amenities)
+                existed.images.rooms = Util.merge_list(existed.images.rooms, data[i].images.rooms)
+                existed.images.site = Util.merge_list(existed.images.site, data[i].images.site)
+                existed.images.amenities = Util.merge_list(existed.images.amenities, data[i].images.amenities)
 
             
-            if existed_item.booking_conditions == None or len(existed_item.booking_conditions) == 0:
-                existed_item.booking_conditions = data[i].booking_conditions
+            if existed.booking_conditions == None or len(existed.booking_conditions) == 0:
+                existed.booking_conditions = data[i].booking_conditions
             elif data[i].booking_conditions != None and len(data[i].booking_conditions) != 0:
-                existed_item.booking_conditions = Util.extend_and_remove_duplicate(existed_item.booking_conditions, data[i].booking_conditions)
+                existed.booking_conditions = Util.merge_list(existed.booking_conditions, data[i].booking_conditions)
 
         return result
 
