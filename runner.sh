@@ -15,4 +15,4 @@ then
 	exit 1
 fi
 
-python3 main.py $1 $2
+python3 main.py "$1" "$2"

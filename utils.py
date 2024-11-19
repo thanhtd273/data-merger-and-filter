@@ -5,12 +5,12 @@ class Util:
 
     @staticmethod
     def split_ids(arg) -> list:
-        if arg == None or arg == "" or arg == "none":
+        if arg is None or arg == "" or arg == "none":
             return []
         return arg.split(",")
 
     @staticmethod
-    def find_index(data: list[Hotel], id: str, destination_id: str) -> bool:
+    def find_index(data: list[Hotel], id: str, destination_id: str) -> int:
         length = len(data)
         for i in range(length):
             if data[i].id == id and data[i].destination_id == destination_id:

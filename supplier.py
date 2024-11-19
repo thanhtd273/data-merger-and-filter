@@ -29,7 +29,7 @@ class Acme(BaseSupplier):
                             country=dto["Country"]
                             )
         general = dto["Facilities"]
-        if (general != None):
+        if (general is not None):
             general = list(map(lambda item: Util.format_str(item), general))
 
         return Hotel(id=dto["Id"], 
@@ -57,13 +57,13 @@ class Patagonia(BaseSupplier):
         images = Images()
         image_data = dto["images"]
         room_images = image_data["rooms"]
-        if room_images != None and isinstance(room_images, list) :
+        if room_images is not None and isinstance(room_images, list) :
             for room in room_images:
                 link = Link(link=room["url"], description=room["description"])
                 images.rooms.append(link)
 
         amenity_images = image_data["amenities"]
-        if amenity_images != None and isinstance(amenity_images, list):
+        if amenity_images is not None and isinstance(amenity_images, list):
             for amenity_image in amenity_images:
                 link = Link(link=amenity_image["url"], description=amenity_image["description"])
                 images.amenities.append(link)
@@ -87,29 +87,28 @@ class Paperflies(BaseSupplier):
         location = Location(address=dto["location"]["address"], country=dto["location"]["country"])
 
         origin_amenities = dto["amenities"]
-        if origin_amenities != None:
-            amenities = Amenities()
-
+        amenities = Amenities()
+        if origin_amenities is not None:
             room = origin_amenities["room"]
-            if room != None:
+            if room is not None:
                 room = list(map(lambda item: Util.format_str(item), room))
                 amenities.room = room
             
             general = origin_amenities["general"]
-            if general != None:
+            if general is not None:
                 general = list(map(lambda item: Util.format_str(item), general))
                 amenities.general = general
 
         images = Images()
         image_data = dto["images"]
         room_images = image_data["rooms"]
-        if room_images != None and isinstance(room_images, list) :
+        if room_images is not None and isinstance(room_images, list) :
             for room_image in room_images:
                 link = Link(link=room_image["link"], description=room_image["caption"])
                 images.rooms.append(link)
 
         site_images = image_data["site"]
-        if site_images != None and isinstance(site_images, list):
+        if site_images is not None and isinstance(site_images, list):
             for site_image in site_images:
                 link = Link(link=site_image["link"], description=site_image["caption"])
                 images.site.append(link)

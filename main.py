@@ -26,49 +26,49 @@ class HotelService:
                 continue
 
             existed = result[index]
-            if data[i].name != None:
+            if data[i].name is not None:
                 existed.name = data[i].name
 
-            if data[i].description != None:
+            if data[i].description is not None:
                 existed.description = data[i].description
 
-            if existed.location == None:
+            if existed.location is None:
                 existed.location = data[i].location
             else:
                 location = data[i].location
-                if location.address != None:
+                if location.address is not None:
                     existed.location.address = location.address
-                if location.city != None:
+                if location.city is not None:
                     existed.location.city = location.city
-                if location.country != None:
+                if location.country is not None:
                     existed.location.country = location.country
-                if location.lat != None:
+                if location.lat is not None:
                     existed.location.lat = location.lat
-                if location.lng != None:
+                if location.lng is not None:
                     existed.location.lng = location.lng
             
-            if existed.amenities == None:
+            if existed.amenities is None:
                 existed.amenities = data[i].amenities
-            elif data[i].amenities != None:
+            elif data[i].amenities is not None:
                 general = data[i].amenities.general
-                if general != None:
+                if general is not None:
                     existed.amenities.general = Util.merge_list(existed.amenities.general, general)
 
                 room = data[i].amenities.room
-                if room != None:
+                if room is not None:
                     existed.amenities.room = Util.merge_list(existed.amenities.room, room)
             
-            if existed.images == None:
+            if existed.images is None:
                 existed.images = data[i].images
-            elif data[i].images != None:
+            elif data[i].images is not None:
                 existed.images.rooms = Util.merge_list(existed.images.rooms, data[i].images.rooms)
                 existed.images.site = Util.merge_list(existed.images.site, data[i].images.site)
                 existed.images.amenities = Util.merge_list(existed.images.amenities, data[i].images.amenities)
 
             
-            if existed.booking_conditions == None or len(existed.booking_conditions) == 0:
+            if existed.booking_conditions is None or len(existed.booking_conditions) == 0:
                 existed.booking_conditions = data[i].booking_conditions
-            elif data[i].booking_conditions != None and len(data[i].booking_conditions) != 0:
+            elif data[i].booking_conditions is not None and len(data[i].booking_conditions) != 0:
                 existed.booking_conditions = Util.merge_list(existed.booking_conditions, data[i].booking_conditions)
 
         return result
