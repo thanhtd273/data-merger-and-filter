@@ -5,14 +5,16 @@ from base import Hotel
 from utils import Util
 from supplier import BaseSupplier, Acme, Patagonia, Paperflies
 
+
 class HotelService:
+
     @staticmethod
     def get_data(suppliers: list[BaseSupplier]):
         result = []
         for supplier in suppliers:
             result.extend(supplier.fetch())
         return result
-    
+
     @staticmethod
     def merge_data(data: list[Hotel]):
         result: list[Hotel] = []
@@ -46,60 +48,67 @@ class HotelService:
                     existed.location.lat = location.lat
                 if location.lng is not None:
                     existed.location.lng = location.lng
-            
+
             if existed.amenities is None:
                 existed.amenities = data[i].amenities
             elif data[i].amenities is not None:
                 general = data[i].amenities.general
                 if general is not None:
-                    existed.amenities.general = Util.merge_list(existed.amenities.general, general)
+                    existed.amenities.general = Util.merge_slist(
+                        existed.amenities.general, general)
 
                 room = data[i].amenities.room
                 if room is not None:
-                    existed.amenities.room = Util.merge_list(existed.amenities.room, room)
-            
+                    existed.amenities.room = Util.merge_slist(
+                        existed.amenities.room, room)
+
             if existed.images is None:
                 existed.images = data[i].images
             elif data[i].images is not None:
-                existed.images.rooms = Util.merge_list(existed.images.rooms, data[i].images.rooms)
-                existed.images.site = Util.merge_list(existed.images.site, data[i].images.site)
-                existed.images.amenities = Util.merge_list(existed.images.amenities, data[i].images.amenities)
+                existed.images.rooms = Util.merge_list(existed.images.rooms,
+                                                       data[i].images.rooms)
+                existed.images.site = Util.merge_list(existed.images.site,
+                                                      data[i].images.site)
+                existed.images.amenities = Util.merge_list(
+                    existed.images.amenities, data[i].images.amenities)
 
-            
-            if existed.booking_conditions is None or len(existed.booking_conditions) == 0:
+            if existed.booking_conditions is None or len(
+                    existed.booking_conditions) == 0:
                 existed.booking_conditions = data[i].booking_conditions
-            elif data[i].booking_conditions is not None and len(data[i].booking_conditions) != 0:
-                existed.booking_conditions = Util.merge_list(existed.booking_conditions, data[i].booking_conditions)
+            elif data[i].booking_conditions is not None and len(
+                    data[i].booking_conditions) != 0:
+                existed.booking_conditions = Util.merge_list(
+                    existed.booking_conditions, data[i].booking_conditions)
 
         return result
 
     @staticmethod
-    def filter(data: list[Hotel], hotel_ids: list[str], destination_ids: list[str]) -> list[Hotel]:
+    def filter(data: list[Hotel], hotel_ids: list[str],
+               destination_ids: list[str]) -> list[Hotel]:
         result = []
         for info in data:
-            if info.id in hotel_ids and str(info.destination_id) in destination_ids:
+            if info.id in hotel_ids and str(
+                    info.destination_id) in destination_ids:
                 result.append(info)
-        
+
         return result
 
+
 def fetch_hotels(hotel_ids: list[str], destination_ids: list[str]):
-    suppliers = [
-        Acme(), 
-        Patagonia(), 
-        Paperflies()
-    ]
+    suppliers = [Acme(), Patagonia(), Paperflies()]
 
     svc = HotelService()
     all_supplier_data = svc.get_data(suppliers)
-    
+
     merged_data = svc.merge_data(all_supplier_data)
 
     if len(hotel_ids) == 0 or len(destination_ids) == 0:
         return merged_data
-    
+
     filtered_data = svc.filter(merged_data, hotel_ids, destination_ids)
-    
+
     return filtered_data
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -114,7 +123,8 @@ def main():
     json_data = json.dumps(data, default=lambda o: o.__dict__, indent=4)
     # with open("hotels.json", "w") as outfile:
     #     outfile.write(json_data)
-    print(json_data) 
+    print(json_data)
+
 
 if __name__ == "__main__":
     main()
