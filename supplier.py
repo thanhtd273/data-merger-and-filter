@@ -5,10 +5,11 @@ from utils import Util
 
 class BaseSupplier:
 
-    def endpoint():
+    def endpoint(self):
         """URL to fetch supplier data"""
+        return None
 
-    def parse(obj: dict) -> Hotel:
+    def parse(self, obj: dict) -> Hotel:
         """Parse supplier-provided data into Hotel object"""
 
     def fetch(self):

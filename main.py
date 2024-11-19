@@ -133,8 +133,6 @@ def main():
 
     data = fetch_hotels(hotel_ids, destination_ids)
     json_data = json.dumps(data, default=lambda o: o.__dict__, indent=4)
-    # with open("hotels.json", "w") as outfile:
-    #     outfile.write(json_data)
     print(json_data)
 
 
