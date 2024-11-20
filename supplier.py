@@ -31,7 +31,6 @@ class Acme(BaseSupplier):
     @staticmethod
     def endpoint():
         return "https://5f2be0b4ffc88500167b85a0.mockapi.io/suppliers/acme"
-        return None
 
     @staticmethod
     def parse(dto: dict) -> Hotel:
