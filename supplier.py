@@ -14,8 +14,16 @@ class BaseSupplier:
 
     def fetch(self):
         url = self.endpoint()
-        resp = requests.get(url)
-        return [self.parse(dto) for dto in resp.json()]
+        if url is None:
+            return None
+        try:
+            resp = requests.get(url)
+            json = resp.json()
+            if json == "Not found":
+                return None
+            return [self.parse(dto) for dto in resp.json()]
+        except:
+            return None
 
 
 class Acme(BaseSupplier):
@@ -23,6 +31,7 @@ class Acme(BaseSupplier):
     @staticmethod
     def endpoint():
         return "https://5f2be0b4ffc88500167b85a0.mockapi.io/suppliers/acme"
+        return None
 
     @staticmethod
     def parse(dto: dict) -> Hotel:

@@ -24,7 +24,7 @@ class Util:
         return list(set(origin))
 
     @staticmethod
-    def merge_slist(origin: list[str], data: list[str]) -> list[str]:
+    def merge_str_list(origin: list[str], data: list[str]) -> list[str]:
         if origin is None or len(origin) == 0:
             return data
         if data is None or len(data) == 0:

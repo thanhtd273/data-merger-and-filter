@@ -12,7 +12,9 @@ class HotelService:
     def get_data(suppliers: list[BaseSupplier]):
         result = []
         for supplier in suppliers:
-            result.extend(supplier.fetch())
+            data = supplier.fetch()
+            if data is not None:
+                result.extend(data)
         return result
 
     @staticmethod
@@ -56,34 +58,34 @@ class HotelService:
         return result
 
     @staticmethod
-    def merge_location(origin, new):
+    def merge_location(origin, data):
         if origin is None:
-            origin = new
+            return data
         else:
-            if new.address is not None:
-                origin.address = new.address
-            if new.city is not None:
-                origin.city = new.city
-            if new.country is not None:
-                origin.country = new.country
-            if new.lat is not None:
-                origin.lat = new.lat
-            if new.lng is not None:
-                origin.lng = new.lng
+            if data.address is not None:
+                origin.address = data.address
+            if data.city is not None:
+                origin.city = data.city
+            if data.country is not None:
+                origin.country = data.country
+            if data.lat is not None:
+                origin.lat = data.lat
+            if data.lng is not None:
+                origin.lng = data.lng
         return origin
 
     @staticmethod
-    def merge_amenities(origin, new):
+    def merge_amenities(origin, data):
         if origin is None:
-            origin = new
-        elif new is not None:
-            general = new.general
+            return data
+        elif data is not None:
+            general = data.general
             if general is not None:
-                origin.general = Util.merge_slist(origin.general, general)
+                origin.general = Util.merge_str_list(origin.general, general)
 
-            room = new.room
+            room = data.room
             if room is not None:
-                origin.room = Util.merge_slist(origin.room, room)
+                origin.room = Util.merge_str_list(origin.room, room)
         return origin
 
     @staticmethod
@@ -111,7 +113,6 @@ def fetch_hotels(hotel_ids: list[str], destination_ids: list[str]):
 
     svc = HotelService()
     all_supplier_data = svc.get_data(suppliers)
-
     merged_data = svc.merge_data(all_supplier_data)
 
     if len(hotel_ids) == 0 or len(destination_ids) == 0:
